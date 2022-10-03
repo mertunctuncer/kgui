@@ -1,0 +1,51 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+
+plugins {
+    java
+    `maven-publish`
+    kotlin("jvm") version "1.7.20"
+}
+
+group = "dev.peopo"
+version = "1.0.0"
+description = "An extension library for bukkit GUI's and Itemstacks."
+
+repositories {
+    mavenCentral()
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://libraries.minecraft.net/")
+}
+
+dependencies {
+    compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
+
+    implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.+")
+    implementation("com.google.code.gson:gson:2.9.1")
+}
+
+tasks {
+    compileKotlin{
+        kotlinOptions.jvmTarget = "1.8"
+    }
+    wrapper {
+        gradleVersion = "7.4"
+        distributionType = Wrapper.DistributionType.ALL
+    }
+    compileJava {
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
+    }
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "${project.group}"
+            artifactId = rootProject.name
+            version = "${project.version}"
+
+            from(components["java"])
+        }
+    }
+}
