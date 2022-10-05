@@ -13,7 +13,7 @@ import java.util.function.Consumer
 
 class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHolder {
 
-	private val inventory: Inventory
+
 	private val consumers =  mutableMapOf<Int, GUIButton>()
 
 	init {
