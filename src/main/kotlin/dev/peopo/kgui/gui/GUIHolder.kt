@@ -1,9 +1,11 @@
 package dev.peopo.kgui.gui
 
-import org.bukkit.inventory.Inventory
+import org.bukkit.event.Listener
 
-interface GUIHolder {
+abstract class GUIHolder {
 
-	val inventory: Inventory
 
+	companion object : Listener {
+
+	}
 }

@@ -8,7 +8,8 @@ import org.bukkit.inventory.ItemStack
 
 private val airItem = ItemStack(Material.AIR)
 
-internal class ButtonBuilder {
+@Suppress("unused")
+class ButtonBuilder {
 
 	private var staticItem: ItemStack = airItem
 	private var dynamicItemBuilder: ((Player) -> ItemStack)? = null

@@ -5,7 +5,7 @@ import org.bukkit.event.inventory.ClickType
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.inventory.ItemStack
 
-internal interface GUIButton {
+interface GUIButton {
 
 	val onClickWithType: Map<ClickType, (InventoryClickEvent) -> Unit>
 	val onDefaultClick: (InventoryClickEvent) -> Unit
