@@ -11,6 +11,9 @@ private val airItem = ItemStack(Material.AIR)
 @Suppress("unused")
 class ButtonBuilder {
 
+	constructor(staticItem: ItemStack) { this.staticItem = staticItem }
+	constructor(dynamicItem: (Player) -> ItemStack) {this.dynamicItemBuilder = dynamicItem}
+
 	private var staticItem: ItemStack = airItem
 	private var dynamicItemBuilder: ((Player) -> ItemStack)? = null
 

@@ -78,7 +78,8 @@ class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHold
 	}
 
 	private fun applyButton(slot: Int, button: GUIButton) { if(button is StaticButton) inventory.setItem(slot, button.staticItem) }
-	private fun refreshInventory() {
+
+	fun refreshInventory() {
 		for(button in buttons) {
 			if(button.value is DynamicButton) applyButton(button.key, button.value)
 		}
