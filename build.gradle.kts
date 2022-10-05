@@ -4,8 +4,6 @@ plugins {
     java
     `maven-publish`
     kotlin("jvm") version "1.7.20"
-
-    id("io.papermc.paperweight.userdev") version "1.3.8"
 }
 
 group = "dev.peopo"
@@ -14,24 +12,28 @@ description = "An extension library for bukkit GUI's and Itemstacks."
 
 repositories {
     mavenCentral()
+    maven("https://hub.spigotmc.org/nexus/content/repositories/snapshots/")
+    maven("https://libraries.minecraft.net/")
 }
 
 dependencies {
-    paperDevBundle("1.18.2-R0.1-SNAPSHOT")
+    compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly("org.spigotmc:spigot-api:1.19.2-R0.1-SNAPSHOT")
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib:1.7.+")
     implementation("com.google.code.gson:gson:2.9.+")
 }
 
 tasks {
-    assemble {
-        dependsOn(reobfJar)
-    }
-
     compileJava {
         options.encoding = Charsets.UTF_8.name()
 
         options.release.set(17)
+    }
+
+    wrapper {
+        gradleVersion = "7.4"
+        distributionType = Wrapper.DistributionType.ALL
     }
 
     javadoc {
