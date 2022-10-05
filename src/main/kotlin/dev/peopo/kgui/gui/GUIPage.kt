@@ -12,7 +12,7 @@ import org.bukkit.event.inventory.InventoryType
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.InventoryHolder
 
-@Suppress("unused")
+@Suppress("unused", "DEPRECATION")
 class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHolder {
 
 
@@ -35,13 +35,13 @@ class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHold
 
 	fun setButton(slot: Int, button: GUIButton) {
 		buttons[slot] = button
-		applyButton(slot, button)
+		if(button is StaticButton) applyStaticButton(slot, button)
 	}
 
 	fun setButton(slotRange: IntRange, button: GUIButton) {
 		for(slot in slotRange) {
 			buttons[slot] = button
-			applyButton(slot, button)
+			if(button is StaticButton) applyStaticButton(slot, button)
 		}
 	}
 
@@ -51,12 +51,12 @@ class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHold
 
 	fun open(player: Player) {
 		open = true
-		refreshInventory()
+		refreshInventory(player)
 		player.openInventory(inventory)
 	}
 
 	fun update(player: Player) {
-		refreshInventory()
+		refreshInventory(player)
 		player.openInventory(inventory)
 	}
 
@@ -68,8 +68,13 @@ class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHold
 		}
 	}
 
-	internal fun onClick(event: InventoryClickEvent) { if(cancelClick) event.isCancelled = true }
-	internal fun onDrag(event: InventoryDragEvent) { if(cancelDrag) event.isCancelled = true }
+	internal fun onClick(event: InventoryClickEvent) {
+		if(cancelClick) event.isCancelled = true
+		buttons[event.slot]?.handleClick(event)
+	}
+	internal fun onDrag(event: InventoryDragEvent) {
+		if(cancelDrag) event.isCancelled = true
+	}
 
 	internal fun onClose(event: InventoryCloseEvent) {
 		if(keepOpen && open) {
@@ -77,11 +82,13 @@ class GUIPage(title: String, type: InventoryType, rows: Int = 6) : InventoryHold
 		} else open = false
 	}
 
-	private fun applyButton(slot: Int, button: GUIButton) { if(button is StaticButton) inventory.setItem(slot, button.staticItem) }
+	private fun applyStaticButton(slot: Int, button: StaticButton) = inventory.setItem(slot, button.staticItem)
+	private fun applyDynamicButton(player: Player, slot: Int, button: DynamicButton) = inventory.setItem(slot, button.dynamicItemBuilder(player))
 
-	fun refreshInventory() {
+	private fun refreshInventory(player: Player) {
 		for(button in buttons) {
-			if(button.value is DynamicButton) applyButton(button.key, button.value)
+			val buttonInstance = button.value
+			if(buttonInstance is DynamicButton) applyDynamicButton(player, button.key, buttonInstance)
 		}
 	}
 }
