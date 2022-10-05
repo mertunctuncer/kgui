@@ -25,15 +25,17 @@ dependencies {
 tasks {
     compileJava {
         options.encoding = Charsets.UTF_8.name()
-
+        sourceCompatibility = "1.8"
+        targetCompatibility = "1.8"
         options.release.set(17)
     }
-
+    compileKotlin{
+        kotlinOptions.jvmTarget = "1.8"
+    }
     wrapper {
         gradleVersion = "7.4"
         distributionType = Wrapper.DistributionType.ALL
     }
-
     javadoc {
         options.encoding = Charsets.UTF_8.name()
     }
