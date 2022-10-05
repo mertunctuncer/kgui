@@ -1,4 +1,4 @@
-package dev.peopo.kgui.head
+package dev.peopo.kgui.item.head
 
 import java.util.*
 
