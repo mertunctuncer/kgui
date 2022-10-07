@@ -15,14 +15,22 @@ val InventoryDragEvent.player
 	get() = whoClicked as Player
 
 
-internal fun Inventory.clone(title: String, holder: GUIHolder) : Inventory {
+internal fun Inventory.clone(title: String, cloneHolder: GUIHolder) : Inventory {
 	val cloned = when(type) {
-		InventoryType.CHEST -> Bukkit.createInventory(holder, size, title)
-		else -> Bukkit.createInventory(holder, type, title)
+		InventoryType.CHEST -> Bukkit.createInventory(cloneHolder, size, title)
+		else -> Bukkit.createInventory(cloneHolder, type, title)
 	}
 
 	for(item in this.contents.withIndex()) cloned.setItem(item.index, item.value.clone())
 	return cloned
 }
 
+fun Inventory.clone(title: String) : Inventory {
+	val cloned = when(type) {
+		InventoryType.CHEST -> Bukkit.createInventory(holder, size, title)
+		else -> Bukkit.createInventory(holder, type, title)
+	}
+	for(item in this.contents.withIndex()) cloned.setItem(item.index, item.value.clone())
+	return cloned
+}
 
