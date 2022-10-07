@@ -12,13 +12,14 @@ private val airItem = ItemStack(Material.AIR)
 class ButtonBuilder {
 
 	constructor(staticItem: ItemStack) { this.staticItem = staticItem }
-	constructor(dynamicItem: (Player) -> ItemStack) {this.dynamicItemBuilder = dynamicItem}
+	constructor(dynamicItem: (Player) -> ItemStack) {this.dynamicItem = dynamicItem}
+
 
 	private var staticItem: ItemStack = airItem
-	private var dynamicItemBuilder: ((Player) -> ItemStack)? = null
+	private var dynamicItem: ((Player) -> ItemStack)? = null
 
 	fun setItem(item: ItemStack) : ButtonBuilder { staticItem = item ; return this }
-	fun setItem(builder: (Player) -> ItemStack) : ButtonBuilder { this.dynamicItemBuilder = builder; return this }
+	fun setItem(builder: (Player) -> ItemStack) : ButtonBuilder { this.dynamicItem = builder; return this }
 
 
 	private var onClickWithType = mutableMapOf<ClickType, (InventoryClickEvent) -> Unit>()
@@ -38,9 +39,8 @@ class ButtonBuilder {
 	}
 
 	fun build() =
-		dynamicItemBuilder
+		dynamicItem
 			?.let { DynamicButton(it, onClickWithType, onDefaultClick, permission, onPermissionDeny) }
 			?: StaticButton(staticItem, onClickWithType, onDefaultClick, permission, onPermissionDeny)
-
 
 }
