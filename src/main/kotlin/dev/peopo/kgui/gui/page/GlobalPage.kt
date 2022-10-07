@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int = 6) {
+class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int = 6) : GUIPage {
 
 	init { registerListeners(plugin) }
 
@@ -30,35 +30,35 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 	private val open = ConcurrentHashMap<UUID, Boolean>()
 	private val buttons =  mutableMapOf<Int, GUIButton>()
 
-	var cancelClick = true
-	var cancelDrag = true
-	var keepOpen = false
+	override var cancelClick = true
+	override var cancelDrag = true
+	override var keepOpen = false
 
-	fun setButton(slot: Int, button: GUIButton) {
+	override fun setButton(slot: Int, button: GUIButton) {
 		buttons[slot] = button
 		if(button is StaticButton) applyStaticButton(slot, button)
 	}
 
-	fun setButton(slotRange: IntRange, button: GUIButton) {
+	override fun setButton(slotRange: IntRange, button: GUIButton) {
 		for(slot in slotRange) setButton(slot, button)
 	}
 
-	fun fillEmpty(slotRange: IntRange, button: GUIButton) {
+	override fun fillEmpty(slotRange: IntRange, button: GUIButton) {
 		slotRange.forEach { if(!buttons.containsKey(it)) setButton(it, button) }
 	}
 
-	fun open(player: Player) {
+	override fun open(player: Player) {
 		open[player.uniqueId] = true
 		refreshInventory(player, globalHolder)
 		player.openInventory(globalHolder.inventory)
 	}
 
-	fun update(player: Player) {
+	override fun update(player: Player) {
 		refreshInventory(player, globalHolder)
 		player.openInventory(globalHolder.inventory)
 	}
 
-	fun close(player: Player) {
+	override fun close(player: Player) {
 		val inventory = player.openInventory.topInventory
 		if(inventory.holder == globalHolder) {
 			player.closeInventory()
