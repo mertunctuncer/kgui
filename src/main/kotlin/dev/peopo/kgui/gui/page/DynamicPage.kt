@@ -1,6 +1,6 @@
 package dev.peopo.kgui.gui.page
 
-import dev.peopo.kgui.gui.ConcurrentInventoryMap
+import dev.peopo.kgui.gui.ConcurrentLazyInventoryMap
 import dev.peopo.kgui.gui.GUIHolder
 import dev.peopo.kgui.gui.button.DynamicButton
 import dev.peopo.kgui.gui.button.GUIButton
@@ -25,7 +25,7 @@ class DynamicPage(plugin: Plugin, title: String, type: InventoryType, rows: Int 
 		InventoryType.CHEST -> Bukkit.createInventory(null, rows * 9, title)
 		else -> Bukkit.createInventory(null, type, title)
 	}
-	private val inventories = ConcurrentInventoryMap(baseInventory, title)
+	private val inventories = ConcurrentLazyInventoryMap(baseInventory, title)
 	private val buttons =  mutableMapOf<Int, GUIButton>()
 
 	override var cancelClick = true

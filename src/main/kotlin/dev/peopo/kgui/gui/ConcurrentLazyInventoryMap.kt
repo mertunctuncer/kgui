@@ -4,7 +4,7 @@ import org.bukkit.inventory.Inventory
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
-internal class ConcurrentInventoryMap(
+internal class ConcurrentLazyInventoryMap(
 	private val baseInventory: Inventory,
 	private val title: String,
 	private val valueCache: ConcurrentHashMap<UUID, GUIHolder> = ConcurrentHashMap()
