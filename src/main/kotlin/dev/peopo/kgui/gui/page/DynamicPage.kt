@@ -34,7 +34,7 @@ class DynamicPage(plugin: Plugin, title: String, type: InventoryType, rows: Int 
 
 	override fun setButton(slot: Int, button: GUIButton) {
 		buttons[slot] = button
-		if(button is StaticButton) applyStaticButton(slot, button)
+		if(button is StaticButton) baseInventory.setItem(slot, button.staticItem)
 	}
 
 	override fun setButton(slotRange: IntRange, button: GUIButton) {
@@ -81,8 +81,6 @@ class DynamicPage(plugin: Plugin, title: String, type: InventoryType, rows: Int 
 			event.player.openInventory(holder.inventory)
 		} else holder.open = false
 	}
-
-	private fun applyStaticButton(slot: Int, button: StaticButton) = baseInventory.setItem(slot, button.staticItem)
 
 	private fun refreshInventory(player: Player, holder: GUIHolder) {
 		buttons.forEach { buttonPair ->

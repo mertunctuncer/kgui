@@ -36,7 +36,7 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 
 	override fun setButton(slot: Int, button: GUIButton) {
 		buttons[slot] = button
-		if(button is StaticButton) applyStaticButton(slot, button)
+		if(button is StaticButton) baseInventory.setItem(slot, button.staticItem)
 	}
 
 	override fun setButton(slotRange: IntRange, button: GUIButton) {
@@ -79,8 +79,6 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 			event.player.openInventory(baseInventory)
 		} else open[event.player.uniqueId] = false
 	}
-
-	private fun applyStaticButton(slot: Int, button: StaticButton) = baseInventory.setItem(slot, button.staticItem)
 
 	private fun refreshInventory(player: Player, holder: GUIHolder) {
 		buttons.forEach { buttonPair ->
