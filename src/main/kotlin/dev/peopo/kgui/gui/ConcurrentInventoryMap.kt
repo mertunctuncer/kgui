@@ -8,7 +8,7 @@ internal class ConcurrentInventoryMap(
 	private val baseInventory: Inventory,
 	private val title: String,
 	private val valueCache: ConcurrentHashMap<UUID, GUIHolder> = ConcurrentHashMap()
-) : Map<UUID, GUIHolder> by valueCache {
+) : MutableMap<UUID, GUIHolder> by valueCache {
 	override operator fun get(key: UUID): GUIHolder = valueCache[key] ?: let {
 		val holder = GUIHolder(baseInventory, title)
 		valueCache[key] = holder

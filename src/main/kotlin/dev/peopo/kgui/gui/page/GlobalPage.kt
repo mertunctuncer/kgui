@@ -1,11 +1,9 @@
 package dev.peopo.kgui.gui.page
 
-import dev.peopo.kgui.gui.ConcurrentInventoryMap
 import dev.peopo.kgui.gui.GUIHolder
 import dev.peopo.kgui.gui.button.DynamicButton
 import dev.peopo.kgui.gui.button.GUIButton
 import dev.peopo.kgui.gui.button.StaticButton
-import dev.peopo.kgui.inventory.player
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -14,7 +12,10 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
+import java.util.UUID
+import java.util.concurrent.ConcurrentHashMap
 
 class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int = 6) {
 
@@ -24,7 +25,9 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 		InventoryType.CHEST -> Bukkit.createInventory(null, rows * 9, title)
 		else -> Bukkit.createInventory(null, type, title)
 	}
-	private val inventories = ConcurrentInventoryMap(baseInventory, title)
+	private val globalHolder = GUIHolder(baseInventory, title)
+
+	private val open = ConcurrentHashMap<UUID, Boolean>()
 	private val buttons =  mutableMapOf<Int, GUIButton>()
 
 	var cancelClick = true
@@ -45,24 +48,21 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 	}
 
 	fun open(player: Player) {
-		val holder = inventories[player.uniqueId]
-		holder.open = true
-		refreshInventory(player, holder)
-		player.openInventory(holder.inventory)
+		open[player.uniqueId] = true
+		refreshInventory(player, globalHolder)
+		player.openInventory(globalHolder.inventory)
 	}
 
 	fun update(player: Player) {
-		val holder = inventories[player.uniqueId]
-		refreshInventory(player, holder)
-		player.openInventory(holder.inventory)
+		refreshInventory(player, globalHolder)
+		player.openInventory(globalHolder.inventory)
 	}
 
 	fun close(player: Player) {
 		val inventory = player.openInventory.topInventory
-		val holder = inventories[player.uniqueId]
-		if(inventory.holder == holder) {
+		if(inventory.holder == globalHolder) {
 			player.closeInventory()
-			holder.open = false
+			open[player.uniqueId] = false
 		}
 	}
 
@@ -75,10 +75,9 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 	}
 
 	private fun onClose(event: InventoryCloseEvent) {
-		val holder = inventories[event.player.uniqueId]
-		if(keepOpen && holder.open) {
-			event.player.openInventory(holder.inventory)
-		} else holder.open = false
+		if(keepOpen && open[event.player.uniqueId] == true) {
+			event.player.openInventory(baseInventory)
+		} else open[event.player.uniqueId] = false
 	}
 
 	private fun applyStaticButton(slot: Int, button: StaticButton) = baseInventory.setItem(slot, button.staticItem)
@@ -94,21 +93,26 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 	private fun registerListeners(plugin: Plugin) {
 		plugin.server.pluginManager.registerEvents(object : Listener {
 			@EventHandler
+			fun onPlayerQuit(event: PlayerQuitEvent) {
+				open.remove(event.player.uniqueId)
+			}
+
+			@EventHandler
 			fun onInventoryClick(event: InventoryClickEvent) {
 				val holder =  event.view.topInventory.holder as? GUIHolder ?: return
-				if(inventories[event.player.uniqueId] == holder) onClick(event)
+				if(globalHolder == holder) onClick(event)
 			}
 
 			@EventHandler
 			fun onInventoryDrag(event: InventoryDragEvent) {
 				val holder =  event.view.topInventory.holder as? GUIHolder ?: return
-				if(inventories[event.player.uniqueId] == holder) onDrag(event)
+				if(globalHolder == holder) onDrag(event)
 			}
 
 			@EventHandler
 			fun onInventoryClose(event: InventoryCloseEvent) {
 				val holder =  event.view.topInventory.holder as? GUIHolder ?: return
-				if(inventories[event.player.uniqueId] == holder) onClose(event)
+				if(globalHolder == holder) onClose(event)
 			}
 		}, plugin)
 	}

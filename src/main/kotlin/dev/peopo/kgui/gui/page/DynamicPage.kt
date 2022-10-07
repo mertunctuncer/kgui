@@ -14,6 +14,7 @@ import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.inventory.InventoryCloseEvent
 import org.bukkit.event.inventory.InventoryDragEvent
 import org.bukkit.event.inventory.InventoryType
+import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.plugin.Plugin
 
 class DynamicPage(plugin: Plugin, title: String, type: InventoryType, rows: Int = 6) {
@@ -93,6 +94,11 @@ class DynamicPage(plugin: Plugin, title: String, type: InventoryType, rows: Int 
 
 	private fun registerListeners(plugin: Plugin) {
 		plugin.server.pluginManager.registerEvents(object : Listener {
+			@EventHandler
+			fun onPlayerQuit(event: PlayerQuitEvent) {
+				inventories.remove(event.player.uniqueId)
+			}
+
 			@EventHandler
 			fun onInventoryClick(event: InventoryClickEvent) {
 				val holder =  event.view.topInventory.holder as? GUIHolder ?: return
