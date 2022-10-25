@@ -21,7 +21,10 @@ internal fun Inventory.clone(title: String, cloneHolder: GUIHolder) : Inventory 
 		else -> Bukkit.createInventory(cloneHolder, type, title)
 	}
 
-	for(item in this.contents.withIndex()) cloned.setItem(item.index, item.value.clone())
+	this.contents.forEachIndexed { index, itemStack ->
+		itemStack?.let {  cloned.setItem(index, it.clone()) }
+	}
+
 	return cloned
 }
 
