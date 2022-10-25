@@ -17,7 +17,7 @@ import org.bukkit.plugin.Plugin
 import java.util.UUID
 import java.util.concurrent.ConcurrentHashMap
 
-class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int = 6) : GUIPage {
+class GlobalPage(plugin: Plugin, private val title: String, type: InventoryType, rows: Int = 6) : GUIPage {
 
 	init { registerListeners(plugin) }
 
@@ -25,7 +25,7 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 		InventoryType.CHEST -> Bukkit.createInventory(null, rows * 9, title)
 		else -> Bukkit.createInventory(null, type, title)
 	}
-	private val globalHolder = GUIHolder(baseInventory, title)
+	private var globalHolder = GUIHolder(baseInventory, title)
 
 	private val open = ConcurrentHashMap<UUID, Boolean>()
 	private val buttons =  mutableMapOf<Int, GUIButton>()
@@ -36,7 +36,10 @@ class GlobalPage(plugin: Plugin, title: String, type: InventoryType, rows: Int =
 
 	override fun setButton(slot: Int, button: GUIButton) {
 		buttons[slot] = button
-		if(button is StaticButton) baseInventory.setItem(slot, button.staticItem)
+		if(button is StaticButton) {
+			baseInventory.setItem(slot, button.staticItem)
+			globalHolder = GUIHolder(baseInventory, title)
+		}
 	}
 
 	override fun setButton(slotRange: IntRange, button: GUIButton) {
