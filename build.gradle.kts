@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.peopo"
-version = "1.1.4"
+version = "1.1.5"
 description = "An extension library for bukkit GUI's and Itemstacks."
 
 repositories {

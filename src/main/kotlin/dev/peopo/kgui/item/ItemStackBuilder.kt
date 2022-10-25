@@ -54,7 +54,7 @@ fun ItemStack.withEnchantments(enchantments: Map<Enchantment, Int>) : ItemStack{
 fun ItemStack.withShine(shine: Boolean = true) : ItemStack{
 	val meta = this.itemMeta
 	if(shine) {
-		this.addEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 0)
+		this.withEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL, 0)
 		meta?.addItemFlags(ItemFlag.HIDE_ENCHANTS)
 	} else {
 		this.removeEnchantment(Enchantment.PROTECTION_ENVIRONMENTAL)
