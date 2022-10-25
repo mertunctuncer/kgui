@@ -16,7 +16,6 @@ open class Base64Head(base64: String, amount: Int) : DefaultHead(amount) {
                 val profileField = meta.javaClass.getDeclaredField("profile")
                 profileField.isAccessible = true
                 profileField.set(meta, profile)
-                profileField.set(meta, profile)
             } catch (e: Exception) {
                 e.printStackTrace()
             }
