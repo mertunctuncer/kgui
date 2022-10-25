@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "dev.peopo"
-version = "1.0.0"
+version = "1.1.1"
 description = "An extension library for bukkit GUI's and Itemstacks."
 
 repositories {
@@ -27,7 +27,6 @@ tasks {
         options.encoding = Charsets.UTF_8.name()
         sourceCompatibility = "1.8"
         targetCompatibility = "1.8"
-        options.release.set(17)
     }
     compileKotlin{
         kotlinOptions.jvmTarget = "1.8"
